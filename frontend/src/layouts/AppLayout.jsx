@@ -1,9 +1,10 @@
 import { useState } from 'react';
-import { Outlet, NavLink } from 'react-router-dom';
+import { Outlet, NavLink, useNavigate } from 'react-router-dom';
 import './AppLayout.css';
 
 function AppLayout() {
   const [sidebarOpen, setSidebarOpen] = useState(false);
+  const navigate = useNavigate();
 
   const toggleSidebar = () => setSidebarOpen((prev) => !prev);
   const closeSidebar = () => setSidebarOpen(false);
@@ -80,7 +81,7 @@ function AppLayout() {
           </div>
 
           <div className="header-actions">
-            <button className="header-action-btn" aria-label="Create new note">
+            <button className="header-action-btn" aria-label="Create new note" onClick={() => navigate('/notes/new')}>
               +
             </button>
             <button className="header-action-btn" aria-label="User menu">

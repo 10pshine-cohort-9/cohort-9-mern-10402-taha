@@ -1,4 +1,4 @@
-import { forwardRef } from 'react';
+import { forwardRef, useId } from 'react';
 import './Input.css';
 
 const Input = forwardRef(function Input(
@@ -14,6 +14,10 @@ const Input = forwardRef(function Input(
   },
   ref
 ) {
+  const generatedId = useId();
+  const inputId = id || generatedId;
+  const errorId = error ? `${inputId}-error` : undefined;
+
   const groupClasses = [
     'input-group',
     fullWidth ? 'input-group-full' : '',
@@ -32,19 +36,21 @@ const Input = forwardRef(function Input(
   return (
     <div className={groupClasses}>
       {label && (
-        <label htmlFor={id} className="input-label">
+        <label htmlFor={inputId} className="input-label">
           {label}
         </label>
       )}
       <input
         ref={ref}
-        id={id}
+        id={inputId}
         type={type}
         placeholder={placeholder}
         className={fieldClasses}
+        aria-invalid={error ? true : undefined}
+        aria-describedby={errorId}
         {...rest}
       />
-      {error && <span className="input-error-text">{error}</span>}
+      {error && <span id={errorId} className="input-error-text">{error}</span>}
     </div>
   );
 });

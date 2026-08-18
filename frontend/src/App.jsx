@@ -5,34 +5,6 @@ import AuthLayout from './layouts/AuthLayout.jsx';
 /* ---- Placeholder Pages ---- */
 /* These will be replaced with actual page components in future PRs */
 
-function LoginPage() {
-  return (
-    <div>
-      <h2>Access Portal</h2>
-      <p style={{ color: 'var(--color-text-secondary)', marginTop: 'var(--space-sm)' }}>
-        Enter your credentials to continue.
-      </p>
-      <p style={{ color: 'var(--color-text-muted)', marginTop: 'var(--space-xl)', fontSize: 'var(--text-sm)' }}>
-        Login form will be implemented in the next PR.
-      </p>
-    </div>
-  );
-}
-
-function SignupPage() {
-  return (
-    <div>
-      <h2>Create Account</h2>
-      <p style={{ color: 'var(--color-text-secondary)', marginTop: 'var(--space-sm)' }}>
-        Register to start taking notes.
-      </p>
-      <p style={{ color: 'var(--color-text-muted)', marginTop: 'var(--space-xl)', fontSize: 'var(--text-sm)' }}>
-        Signup form will be implemented in the next PR.
-      </p>
-    </div>
-  );
-}
-
 function DashboardPage() {
   return (
     <div>
@@ -82,11 +54,9 @@ function ProfilePage() {
 function App() {
   return (
     <Routes>
-      {/* Auth Routes — uses split-screen AuthLayout */}
-      <Route element={<AuthLayout />}>
-        <Route path="/login" element={<LoginPage />} />
-        <Route path="/signup" element={<SignupPage />} />
-      </Route>
+      {/* Auth Routes — AuthLayout renders Login/Signup internally */}
+      <Route path="/login" element={<AuthLayout />} />
+      <Route path="/signup" element={<AuthLayout />} />
 
       {/* App Routes — uses sidebar/header AppLayout */}
       <Route element={<AppLayout />}>

@@ -1,24 +1,29 @@
 import { Routes, Route, Navigate } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import AppLayout from './layouts/AppLayout.jsx';
 import AuthLayout from './layouts/AuthLayout.jsx';
+import Dashboard from './pages/Dashboard.jsx';
 
 /* ---- Placeholder Pages ---- */
 /* These will be replaced with actual page components in future PRs */
 
-function DashboardPage() {
+function BackButton() {
+  const navigate = useNavigate();
   return (
-    <div>
-      <h1>All Notes</h1>
-      <p style={{ marginTop: 'var(--space-lg)' }}>
-        Dashboard with note cards will be implemented in a future PR.
-      </p>
-    </div>
+    <button
+      className="btn btn-ghost btn-sm"
+      onClick={() => navigate('/')}
+      style={{ marginBottom: 'var(--space-xl)' }}
+    >
+      ← Back to Notes
+    </button>
   );
 }
 
 function NewNotePage() {
   return (
     <div>
+      <BackButton />
       <h1>New Note</h1>
       <p style={{ marginTop: 'var(--space-lg)' }}>
         Note editor will be implemented in a future PR.
@@ -30,6 +35,7 @@ function NewNotePage() {
 function EditNotePage() {
   return (
     <div>
+      <BackButton />
       <h1>Edit Note</h1>
       <p style={{ marginTop: 'var(--space-lg)' }}>
         Note editor will be implemented in a future PR.
@@ -41,6 +47,7 @@ function EditNotePage() {
 function ProfilePage() {
   return (
     <div>
+      <BackButton />
       <h1>Profile</h1>
       <p style={{ marginTop: 'var(--space-lg)' }}>
         User profile will be implemented in a future PR.
@@ -60,8 +67,8 @@ function App() {
 
       {/* App Routes — uses sidebar/header AppLayout */}
       <Route element={<AppLayout />}>
-        <Route path="/" element={<DashboardPage />} />
-        <Route path="/dashboard" element={<DashboardPage />} />
+        <Route path="/" element={<Dashboard />} />
+        <Route path="/dashboard" element={<Dashboard />} />
         <Route path="/notes/new" element={<NewNotePage />} />
         <Route path="/notes/:id/edit" element={<EditNotePage />} />
         <Route path="/profile" element={<ProfilePage />} />

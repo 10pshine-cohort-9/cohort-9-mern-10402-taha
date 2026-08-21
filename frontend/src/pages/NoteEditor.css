@@ -1,0 +1,334 @@
+/* ============================================
+   NoteEditor — Note Editor Page
+   ============================================ */
+
+/* ---- Page Header ---- */
+
+.note-editor-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: var(--space-xl);
+  margin-bottom: var(--space-2xl);
+}
+
+.note-editor-header-left {
+  flex: 1;
+  min-width: 0;
+}
+
+.note-editor-breadcrumb {
+  font-size: var(--text-xs);
+  font-weight: var(--weight-semibold);
+  letter-spacing: var(--tracking-wider);
+  text-transform: uppercase;
+  color: var(--color-accent);
+  margin-bottom: var(--space-sm);
+  display: block;
+}
+
+.note-editor-page-title {
+  font-size: clamp(1.5rem, 4vw, var(--text-3xl));
+  font-weight: var(--weight-bold);
+  letter-spacing: var(--tracking-tight);
+  color: var(--color-text-primary);
+  line-height: var(--leading-tight);
+}
+
+.note-editor-actions {
+  display: flex;
+  align-items: center;
+  gap: var(--space-sm);
+  flex-shrink: 0;
+}
+
+/* ---- Title Input ---- */
+
+.note-editor-title-wrapper {
+  margin-bottom: var(--space-xl);
+}
+
+.note-editor-title-input {
+  width: 100%;
+  background: transparent;
+  border: none;
+  border-bottom: 1px solid var(--color-border);
+  padding: var(--space-md) 0;
+  font-family: var(--font-sans);
+  font-size: var(--text-2xl);
+  font-weight: var(--weight-bold);
+  color: var(--color-text-primary);
+  letter-spacing: var(--tracking-tight);
+  line-height: var(--leading-tight);
+  outline: none;
+  transition: border-color var(--transition-fast);
+}
+
+.note-editor-title-input::placeholder {
+  color: var(--color-text-muted);
+}
+
+.note-editor-title-input:focus {
+  border-color: var(--color-accent);
+}
+
+/* ---- Editor Wrapper ---- */
+
+.note-editor-wrapper {
+  background-color: var(--color-bg-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-xl);
+  overflow: hidden;
+  transition: border-color var(--transition-fast), box-shadow var(--transition-fast);
+}
+
+.note-editor-wrapper:focus-within {
+  border-color: var(--color-border-accent);
+  box-shadow: 0 0 0 3px var(--color-accent-muted);
+}
+
+/* ---- Editor Body ---- */
+
+.note-editor-body {
+  padding: var(--space-xl);
+  min-height: 400px;
+}
+
+/* ---- Tiptap / ProseMirror Content Styling ---- */
+
+.note-editor-content {
+  outline: none;
+  font-family: var(--font-sans);
+  font-size: var(--text-md);
+  color: var(--color-text-primary);
+  line-height: var(--leading-relaxed);
+  min-height: 360px;
+}
+
+/* Placeholder */
+.note-editor-content p.is-editor-empty:first-child::before {
+  content: attr(data-placeholder);
+  float: left;
+  color: var(--color-text-muted);
+  pointer-events: none;
+  height: 0;
+  font-style: italic;
+}
+
+/* Paragraphs */
+.note-editor-content p {
+  margin-bottom: var(--space-md);
+  color: var(--color-text-primary);
+}
+
+/* Headings */
+.note-editor-content h1 {
+  font-size: var(--text-3xl);
+  font-weight: var(--weight-bold);
+  margin-top: var(--space-2xl);
+  margin-bottom: var(--space-lg);
+  color: var(--color-text-primary);
+  letter-spacing: var(--tracking-tight);
+}
+
+.note-editor-content h2 {
+  font-size: var(--text-2xl);
+  font-weight: var(--weight-bold);
+  margin-top: var(--space-xl);
+  margin-bottom: var(--space-md);
+  color: var(--color-text-primary);
+  letter-spacing: var(--tracking-tight);
+}
+
+.note-editor-content h3 {
+  font-size: var(--text-xl);
+  font-weight: var(--weight-semibold);
+  margin-top: var(--space-xl);
+  margin-bottom: var(--space-md);
+  color: var(--color-text-primary);
+}
+
+/* Bold, Italic, Underline, Strike */
+.note-editor-content strong {
+  font-weight: var(--weight-bold);
+  color: var(--color-text-primary);
+}
+
+.note-editor-content em {
+  font-style: italic;
+}
+
+.note-editor-content u {
+  text-decoration-color: var(--color-accent);
+  text-underline-offset: 3px;
+}
+
+.note-editor-content s {
+  color: var(--color-text-secondary);
+}
+
+/* Lists */
+.note-editor-content ul,
+.note-editor-content ol {
+  padding-left: var(--space-xl);
+  margin-bottom: var(--space-lg);
+}
+
+.note-editor-content ul {
+  list-style: disc;
+}
+
+.note-editor-content ol {
+  list-style: decimal;
+}
+
+.note-editor-content li {
+  margin-bottom: var(--space-sm);
+  color: var(--color-text-primary);
+}
+
+.note-editor-content li p {
+  margin-bottom: 0;
+}
+
+/* Blockquote */
+.note-editor-content blockquote {
+  border-left: 3px solid var(--color-accent);
+  padding-left: var(--space-lg);
+  margin: var(--space-lg) 0;
+  font-style: italic;
+  color: var(--color-text-secondary);
+}
+
+.note-editor-content blockquote p {
+  color: var(--color-text-secondary);
+}
+
+/* Code Block */
+.note-editor-content pre {
+  background-color: var(--color-bg-primary);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-lg);
+  padding: var(--space-lg);
+  margin: var(--space-lg) 0;
+  overflow-x: auto;
+}
+
+.note-editor-content pre code {
+  font-family: var(--font-mono);
+  font-size: var(--text-base);
+  color: var(--color-accent);
+  background: none;
+  padding: 0;
+}
+
+/* Inline Code */
+.note-editor-content code {
+  font-family: var(--font-mono);
+  font-size: 0.9em;
+  background-color: var(--color-bg-elevated);
+  color: var(--color-accent);
+  padding: 2px 6px;
+  border-radius: var(--radius-sm);
+}
+
+/* Horizontal Rule */
+.note-editor-content hr {
+  border: none;
+  border-top: 1px solid var(--color-border);
+  margin: var(--space-2xl) 0;
+}
+
+/* ---- Loading State ---- */
+
+.note-editor-loading {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 50vh;
+  gap: var(--space-lg);
+}
+
+.note-editor-loading-text {
+  font-size: var(--text-base);
+  color: var(--color-text-muted);
+  font-style: italic;
+}
+
+/* ============================================
+   Responsive
+   ============================================ */
+
+@media (max-width: 768px) {
+  .note-editor {
+    max-width: 100%;
+    overflow-x: hidden;
+  }
+
+  .note-editor-header {
+    flex-direction: column;
+    gap: var(--space-lg);
+  }
+
+  .note-editor-actions {
+    width: 100%;
+    justify-content: flex-end;
+  }
+
+  .note-editor-title-input {
+    font-size: var(--text-xl);
+  }
+
+  .note-editor-body {
+    padding: var(--space-lg);
+    min-height: 300px;
+  }
+
+  .note-editor-content {
+    font-size: var(--text-base);
+    min-height: 260px;
+  }
+
+  .note-editor-content h1 {
+    font-size: var(--text-2xl);
+  }
+
+  .note-editor-content h2 {
+    font-size: var(--text-xl);
+  }
+
+  .note-editor-content h3 {
+    font-size: var(--text-lg);
+  }
+}
+
+@media (max-width: 480px) {
+  .note-editor-page-title {
+    font-size: var(--text-xl);
+  }
+
+  .note-editor-actions {
+    flex-wrap: wrap;
+    gap: var(--space-xs);
+  }
+
+  .note-editor-actions .btn {
+    font-size: var(--text-xs);
+    padding: var(--space-sm) var(--space-md);
+  }
+
+  .note-editor-title-input {
+    font-size: var(--text-lg);
+  }
+
+  .note-editor-body {
+    padding: var(--space-md);
+    min-height: 250px;
+  }
+
+  .note-editor-content {
+    min-height: 220px;
+  }
+}
+

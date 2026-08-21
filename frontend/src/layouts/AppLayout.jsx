@@ -42,7 +42,7 @@ function AppLayout() {
             }
             onClick={closeSidebar}
           >
-            Settings
+            Profile
           </NavLink>
         </nav>
 

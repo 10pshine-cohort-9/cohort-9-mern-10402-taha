@@ -1,0 +1,46 @@
+/* ---- Loader Component ---- */
+
+.loader-container {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.loader-fullscreen {
+  position: fixed;
+  inset: 0;
+  background-color: var(--color-bg-primary);
+  z-index: var(--z-overlay);
+}
+
+/* ---- Spinner ---- */
+
+.loader-spinner {
+  border-radius: 50%;
+  border: 2px solid var(--color-border);
+  border-top-color: var(--color-accent);
+  animation: loader-spin 0.8s linear infinite;
+}
+
+.loader-spinner-sm {
+  width: 20px;
+  height: 20px;
+}
+
+.loader-spinner-md {
+  width: 32px;
+  height: 32px;
+  border-width: 3px;
+}
+
+.loader-spinner-lg {
+  width: 48px;
+  height: 48px;
+  border-width: 3px;
+}
+
+@keyframes loader-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}

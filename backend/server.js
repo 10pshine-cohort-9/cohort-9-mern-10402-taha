@@ -1,13 +1,32 @@
-const express = require("express");
+require('dotenv').config();
+const express = require('express');
+const cors = require('cors');
+const connectDB = require('./config/database');
+const logger = require('./utils/logger');
+const pinoHttp = require('pino-http');
+const healthRoutes = require('./routes/healthRoutes');
+const notFound = require('./middleware/notFound');
+const errorHandler = require('./middleware/errorHandler');
 
 const app = express();
 
-const PORT = 5000;
+// Database connection
+connectDB();
 
-app.get("/", (req, res) => {
-    res.send("Backend Running...");
-});
+// Middleware
+app.use(cors());
+app.use(express.json());
+app.use(pinoHttp({ logger }));
+
+// Routes
+app.use('/api/health', healthRoutes);
+
+// Error Handling Middleware
+app.use(notFound);
+app.use(errorHandler);
+
+const PORT = process.env.PORT || 5000;
 
 app.listen(PORT, () => {
-    console.log(`Server is running on port ${PORT}`);
+  logger.info(`Server is running on port ${PORT}`);
 });

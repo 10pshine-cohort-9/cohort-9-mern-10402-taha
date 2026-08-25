@@ -1,5 +1,6 @@
-import { useState, useMemo } from 'react';
+import { useState, useMemo, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
+import { getNotes } from '../utils/storage.js';
 import './Dashboard.css';
 
 /* ---- Note Card Component ---- */
@@ -84,12 +85,11 @@ function Dashboard() {
   const navigate = useNavigate();
   const [searchQuery, setSearchQuery] = useState('');
 
-  /*
-   * Notes will be fetched from the backend in a future PR.
-   * For now, we start with an empty array to show the empty state.
-   * When API integration is added, replace this with the fetched data.
-   */
-  const notes = [];
+  const [notes, setNotes] = useState([]);
+
+  useEffect(() => {
+    setNotes(getNotes());
+  }, []);
 
   const filteredNotes = useMemo(() => {
     if (!searchQuery.trim()) return notes;

@@ -7,21 +7,8 @@ import Placeholder from '@tiptap/extension-placeholder';
 import Button from '../components/Button/Button.jsx';
 import Loader from '../components/Loader/Loader.jsx';
 import EditorToolbar from '../components/EditorToolbar/EditorToolbar.jsx';
+import { getNote, saveNote } from '../utils/storage.js';
 import './NoteEditor.css';
-
-/* ---- Mock Data for Edit Mode ---- */
-/* Will be replaced with API fetch in a future PR */
-
-const MOCK_NOTES = {
-  '1': {
-    title: 'Getting Started with Aesthete Notes',
-    content: '<h2>Welcome to Aesthete Notes</h2><p>This is your personal thought space. Use the toolbar above to format your content with <strong>bold</strong>, <em>italic</em>, <u>underline</u>, and more.</p><ul><li>Create structured notes with headings</li><li>Organize ideas with bullet lists</li><li>Add code snippets and blockquotes</li></ul><blockquote><p>The best ideas deserve a beautiful space to live in.</p></blockquote>',
-  },
-  '2': {
-    title: 'Project Planning Notes',
-    content: '<h2>Sprint Goals</h2><p>Focus areas for this iteration:</p><ol><li>Complete the Note Editor UI</li><li>Integrate rich text formatting</li><li>Add responsive design support</li></ol><h3>Technical Notes</h3><p>Using <strong>Tiptap</strong> as the rich-text engine for its clean API and extensibility.</p>',
-  },
-};
 
 /* ---- Note Editor Page ---- */
 
@@ -58,12 +45,12 @@ function NoteEditor() {
 
   useEffect(() => {
     if (isEditMode && editor) {
-      // Simulate API fetch — will be replaced with real API call
+      // Fetch note from local storage
       const timer = setTimeout(() => {
-        const note = MOCK_NOTES[id];
+        const note = getNote(id);
         if (note) {
-          setTitle(note.title);
-          editor.commands.setContent(note.content);
+          setTitle(note.title || '');
+          editor.commands.setContent(note.content || '');
         }
         setLoading(false);
       }, 600);
@@ -87,10 +74,12 @@ function NoteEditor() {
 
     if (isEditMode) {
       noteData.id = id;
+    } else {
+      noteData.id = Date.now().toString(); // Generate simple ID for new notes
     }
 
-    // Frontend-only: log to console. API integration in a future PR.
-    console.log(`[NoteEditor] ${isEditMode ? 'Update' : 'Create'} note:`, noteData);
+    // Save to local storage
+    saveNote(noteData);
 
     // Simulate save delay then navigate back
     setTimeout(() => {

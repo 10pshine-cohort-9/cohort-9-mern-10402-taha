@@ -20,6 +20,7 @@ app.use(pinoHttp({ logger }));
 
 // Routes
 app.use('/api/health', healthRoutes);
+app.use('/api/auth', require('./routes/authRoutes'));
 
 // Error Handling Middleware
 app.use(notFound);

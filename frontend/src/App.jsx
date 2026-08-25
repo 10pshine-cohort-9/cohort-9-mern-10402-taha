@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import AppLayout from './layouts/AppLayout.jsx';
 import AuthLayout from './layouts/AuthLayout.jsx';
 import Dashboard from './pages/Dashboard.jsx';
+import NoteEditor from './pages/NoteEditor.jsx';
 
 /* ---- Placeholder Pages ---- */
 /* These will be replaced with actual page components in future PRs */
@@ -17,30 +18,6 @@ function BackButton() {
     >
       ← Back to Notes
     </button>
-  );
-}
-
-function NewNotePage() {
-  return (
-    <div>
-      <BackButton />
-      <h1>New Note</h1>
-      <p style={{ marginTop: 'var(--space-lg)' }}>
-        Note editor will be implemented in a future PR.
-      </p>
-    </div>
-  );
-}
-
-function EditNotePage() {
-  return (
-    <div>
-      <BackButton />
-      <h1>Edit Note</h1>
-      <p style={{ marginTop: 'var(--space-lg)' }}>
-        Note editor will be implemented in a future PR.
-      </p>
-    </div>
   );
 }
 
@@ -69,8 +46,8 @@ function App() {
       <Route element={<AppLayout />}>
         <Route path="/" element={<Dashboard />} />
         <Route path="/dashboard" element={<Dashboard />} />
-        <Route path="/notes/new" element={<NewNotePage />} />
-        <Route path="/notes/:id/edit" element={<EditNotePage />} />
+        <Route path="/notes/new" element={<NoteEditor />} />
+        <Route path="/notes/:id/edit" element={<NoteEditor />} />
         <Route path="/profile" element={<ProfilePage />} />
       </Route>
 

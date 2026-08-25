@@ -1,12 +1,18 @@
 import { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import Input from '../components/Input/Input.jsx';
 import Button from '../components/Button/Button.jsx';
+import { loginApi } from '../utils/api.js';
+import { useAuth } from '../context/AuthContext.jsx';
 
 function Login({ mode, switchMode }) {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [loading, setLoading] = useState(false);
   const [errors, setErrors] = useState({});
+  const [apiError, setApiError] = useState('');
+  const { login } = useAuth();
+  const navigate = useNavigate();
 
   const validate = () => {
     const newErrors = {};
@@ -22,15 +28,20 @@ function Login({ mode, switchMode }) {
     return Object.keys(newErrors).length === 0;
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     if (validate()) {
       setLoading(true);
-      // Mock API call — will connect to POST /api/auth/login later
-      setTimeout(() => {
+      setApiError('');
+      try {
+        const data = await loginApi(email, password);
+        login({ _id: data._id, name: data.name, email: data.email }, data.token);
+        navigate('/dashboard');
+      } catch (err) {
+        setApiError(err.message);
+      } finally {
         setLoading(false);
-        console.log('Login submitted:', { email });
-      }, 1500);
+      }
     }
   };
 
@@ -42,6 +53,8 @@ function Login({ mode, switchMode }) {
     >
       <h2 className="form-title">Welcome Back</h2>
       <p className="form-subtitle">Sign in to continue to your notes.</p>
+
+      {apiError && <div className="api-error" style={{ color: 'var(--color-danger)', marginBottom: '1rem', fontSize: '0.875rem', textAlign: 'center' }}>{apiError}</div>}
 
       <form className="auth-form" onSubmit={handleSubmit} noValidate>
         <Input
@@ -64,11 +77,7 @@ function Login({ mode, switchMode }) {
           autoComplete="current-password"
         />
 
-        <div className="form-actions">
-          <label className="checkbox-label">
-            <input type="checkbox" defaultChecked /> Keep me signed in
-          </label>
-        </div>
+
 
         <Button
           type="submit"

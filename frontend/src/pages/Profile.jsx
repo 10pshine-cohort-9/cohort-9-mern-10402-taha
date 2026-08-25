@@ -1,7 +1,7 @@
 import { useState, useCallback, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
 import Button from '../components/Button/Button.jsx';
-import { getUser, getNotes } from '../utils/storage.js';
+import { useAuth } from '../context/AuthContext.jsx';
+import { getNotesApi } from '../utils/api.js';
 import './Profile.css';
 
 /* ---- Profile Info Row ---- */
@@ -29,35 +29,31 @@ function StatCard({ label, value }) {
 /* ---- Profile Page ---- */
 
 function Profile() {
-  const navigate = useNavigate();
   const [loggingOut, setLoggingOut] = useState(false);
-  const [user, setUser] = useState(null);
+  const { user, logout } = useAuth();
   const [notesCount, setNotesCount] = useState(0);
 
   useEffect(() => {
-    setUser(getUser());
-    setNotesCount(getNotes().length);
+    getNotesApi().then(notes => setNotesCount(notes ? notes.length : 0)).catch(() => setNotesCount(0));
   }, []);
 
   /* ---- Logout Handler ---- */
 
   const handleLogout = useCallback(() => {
     setLoggingOut(true);
-
-    // Frontend-only: simulate logout. Will connect to auth API in a future PR.
-    console.log('[Profile] User logged out');
-
     setTimeout(() => {
-      setLoggingOut(false);
-      navigate('/login');
+      logout();
     }, 800);
-  }, [navigate]);
+  }, [logout]);
 
   /* ---- Render ---- */
 
   if (!user) return null;
 
-  const formattedJoinDate = new Date(user.joinedAt).toLocaleDateString('en-US', {
+  // Assume user created recently if no joinedAt in new schema
+  const joinedDate = user.createdAt ? new Date(user.createdAt) : new Date();
+  
+  const formattedJoinDate = joinedDate.toLocaleDateString('en-US', {
     month: 'long',
     year: 'numeric',
   });
@@ -77,11 +73,11 @@ function Profile() {
         {/* Avatar & Identity */}
         <div className="profile-identity">
           <div className="profile-avatar" aria-hidden="true">
-            {user.avatar}
+            {user.name ? user.name.charAt(0).toUpperCase() : 'U'}
           </div>
           <div className="profile-identity-info">
             <h2 className="profile-name">{user.name}</h2>
-            <span className="profile-role-badge">{user.role}</span>
+            <span className="profile-role-badge">Member</span>
           </div>
         </div>
 
@@ -91,7 +87,7 @@ function Profile() {
         {/* User Details */}
         <div className="profile-details" id="profileDetails">
           <ProfileField label="Email" value={user.email} />
-          <ProfileField label="Role" value={user.role} />
+          <ProfileField label="Role" value="Member" />
           <ProfileField label="Member Since" value={formattedJoinDate} />
         </div>
 
@@ -101,7 +97,7 @@ function Profile() {
         {/* Stats */}
         <div className="profile-stats">
           <StatCard label="Notes Created" value={notesCount} />
-          <StatCard label="Member Since" value={new Date(user.joinedAt).getFullYear()} />
+          <StatCard label="Member Since" value={joinedDate.getFullYear()} />
         </div>
       </div>
 

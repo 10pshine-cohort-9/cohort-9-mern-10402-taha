@@ -1,10 +1,12 @@
 import { useState } from 'react';
 import { Outlet, NavLink, useNavigate } from 'react-router-dom';
+import { useAuth } from '../context/AuthContext.jsx';
 import './AppLayout.css';
 
 function AppLayout() {
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const navigate = useNavigate();
+  const { user } = useAuth();
 
   const toggleSidebar = () => setSidebarOpen((prev) => !prev);
   const closeSidebar = () => setSidebarOpen(false);
@@ -63,10 +65,12 @@ function AppLayout() {
             role="button"
             tabIndex={0}
           >
-            <div className="sidebar-avatar">A</div>
+            <div className="sidebar-avatar" aria-hidden="true">
+              {user?.name ? user.name.charAt(0).toUpperCase() : 'U'}
+            </div>
             <div className="sidebar-user-info">
-              <span className="sidebar-user-name">Admin User</span>
-              <span className="sidebar-user-role">Admin</span>
+              <span className="sidebar-user-name">{user?.name || 'User'}</span>
+              <span className="sidebar-user-role">Member</span>
             </div>
           </div>
         </div>

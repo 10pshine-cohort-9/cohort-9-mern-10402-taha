@@ -8,6 +8,7 @@ const mongoose = require('mongoose');
 const getNotes = async (req, res, next) => {
   try {
     const notes = await Note.find({ user: req.user.id });
+    logger.info(`Fetched ${notes.length} notes for user ${req.user.id}`);
     res.status(200).json(notes);
   } catch (error) {
     next(error);
@@ -39,6 +40,7 @@ const getNote = async (req, res, next) => {
       return next(new Error('User not authorized'));
     }
 
+    logger.info(`Note read by user ${req.user.id}: ${note._id}`);
     res.status(200).json(note);
   } catch (error) {
     next(error);

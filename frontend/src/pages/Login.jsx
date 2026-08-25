@@ -77,7 +77,7 @@ function Login({ mode, switchMode }) {
           className="btn-submit"
           disabled={loading}
         >
-          {loading ? 'Signing In…' : 'Sign In'}
+          {loading ? 'Logging in…' : 'Login'}
         </Button>
       </form>
 

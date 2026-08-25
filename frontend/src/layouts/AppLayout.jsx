@@ -9,12 +9,6 @@ function AppLayout() {
   const toggleSidebar = () => setSidebarOpen((prev) => !prev);
   const closeSidebar = () => setSidebarOpen(false);
 
-  const navItems = [
-    { to: '/', label: 'All Notes', icon: '📋' },
-    { to: '/dashboard', label: 'Dashboard', icon: '📊' },
-    { to: '/profile', label: 'Profile', icon: '👤' },
-  ];
-
   return (
     <div className="app-layout">
       {/* Sidebar Overlay (mobile) */}
@@ -25,34 +19,54 @@ function AppLayout() {
 
       {/* Sidebar */}
       <aside className={`sidebar ${sidebarOpen ? 'sidebar-open' : ''}`}>
-        <div className="sidebar-brand">
-          <div className="sidebar-brand-title">Notes</div>
-          <div className="sidebar-brand-subtitle">Your Workspace</div>
+        <div className="sidebar-brand" onClick={() => { navigate('/'); closeSidebar(); }} role="button" tabIndex={0}>
+          <div className="sidebar-brand-title">Aesthete</div>
+          <div className="sidebar-brand-subtitle">Your Thought Space</div>
         </div>
 
         <nav className="sidebar-nav">
-          {navItems.map((item) => (
-            <NavLink
-              key={item.to}
-              to={item.to}
-              end={item.to === '/'}
-              className={({ isActive }) =>
-                `sidebar-nav-item ${isActive ? 'sidebar-nav-item-active' : ''}`
-              }
-              onClick={closeSidebar}
-            >
-              <span className="sidebar-nav-icon">{item.icon}</span>
-              {item.label}
-            </NavLink>
-          ))}
+          <NavLink
+            to="/"
+            end
+            className={({ isActive }) =>
+              `sidebar-nav-item ${isActive ? 'sidebar-nav-item-active' : ''}`
+            }
+            onClick={closeSidebar}
+          >
+            Home
+          </NavLink>
+          <NavLink
+            to="/profile"
+            className={({ isActive }) =>
+              `sidebar-nav-item ${isActive ? 'sidebar-nav-item-active' : ''}`
+            }
+            onClick={closeSidebar}
+          >
+            Settings
+          </NavLink>
         </nav>
 
+        {/* Spacer pushes footer to bottom */}
+        <div className="sidebar-spacer" />
+
         <div className="sidebar-footer">
-          <div className="sidebar-user">
-            <div className="sidebar-avatar">U</div>
+          <button
+            className="sidebar-new-note-btn"
+            type="button"
+            onClick={() => { navigate('/notes/new'); closeSidebar(); }}
+          >
+            + New Note
+          </button>
+          <div
+            className="sidebar-user"
+            onClick={() => { navigate('/profile'); closeSidebar(); }}
+            role="button"
+            tabIndex={0}
+          >
+            <div className="sidebar-avatar">A</div>
             <div className="sidebar-user-info">
-              <span className="sidebar-user-name">User</span>
-              <span className="sidebar-user-role">Member</span>
+              <span className="sidebar-user-name">Admin User</span>
+              <span className="sidebar-user-role">Admin</span>
             </div>
           </div>
         </div>
@@ -70,22 +84,15 @@ function AppLayout() {
             ☰
           </button>
 
-          <div className="header-search">
-            <span className="header-search-icon">🔍</span>
-            <input
-              type="text"
-              className="header-search-input"
-              placeholder="Search notes..."
-              aria-label="Search notes"
-            />
-          </div>
+          <div className="header-spacer" />
 
           <div className="header-actions">
-            <button className="header-action-btn" aria-label="Create new note" onClick={() => navigate('/notes/new')}>
+            <button
+              className="header-action-btn header-action-btn--create"
+              aria-label="Create new note"
+              onClick={() => navigate('/notes/new')}
+            >
               +
-            </button>
-            <button className="header-action-btn" aria-label="User menu">
-              👤
             </button>
           </div>
         </header>

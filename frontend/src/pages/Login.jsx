@@ -49,7 +49,7 @@ function Login({ mode, switchMode }) {
     <div
       className="pane pane__signin"
       id="paneSignin"
-      inert={mode === 'signup' ? '' : undefined}
+      inert={mode === 'signup' ? true : undefined}
     >
       <h2 className="form-title">Welcome Back</h2>
       <p className="form-subtitle">Sign in to continue to your notes.</p>

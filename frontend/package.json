@@ -8,7 +8,8 @@
     "build": "vite build",
     "lint": "eslint .",
     "preview": "vite preview",
-    "test": "jest --watchAll=false"
+    "test": "jest --watchAll=false",
+    "test:coverage": "jest --coverage --watchAll=false"
   },
   "dependencies": {
     "@tiptap/extension-placeholder": "^3.30.2",

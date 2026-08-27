@@ -13,5 +13,12 @@ module.exports = {
   ],
   testMatch: [
     '<rootDir>/src/__tests__/**/*.test.{js,jsx}'
-  ]
+  ],
+  collectCoverageFrom: [
+    'src/**/*.{js,jsx}',
+    '!src/__tests__/**',
+    '!src/__mocks__/**'
+  ],
+  coverageDirectory: 'coverage',
+  coverageReporters: ['lcov', 'text']
 };

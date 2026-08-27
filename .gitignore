@@ -27,3 +27,10 @@ Thumbs.db
 # Editor
 .vscode/
 .idea/
+
+# Test coverage
+frontend/coverage/
+backend/coverage/
+
+# SonarScanner
+.scannerwork/

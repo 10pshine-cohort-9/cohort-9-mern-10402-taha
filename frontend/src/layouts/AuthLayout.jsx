@@ -18,6 +18,7 @@ function AuthLayout() {
   useEffect(() => {
     const newMode = getMode(location.pathname);
     if (newMode !== mode) {
+      // eslint-disable-next-line react-hooks/set-state-in-effect
       setIsSliding(true);
       setMode(newMode);
       const timer = setTimeout(() => setIsSliding(false), SLIDE_MS);

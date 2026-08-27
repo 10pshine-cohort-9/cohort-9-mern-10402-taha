@@ -1,6 +1,7 @@
-import { useState, useMemo, useEffect } from 'react';
+import { useState, useMemo, useEffect, useCallback } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { getNotes } from '../utils/storage.js';
+import { getNotesApi } from '../utils/api.js';
+import Loader from '../components/Loader/Loader.jsx';
 import './Dashboard.css';
 
 /* ---- Note Card Component ---- */
@@ -14,6 +15,15 @@ function NoteCard({ note, onClick }) {
         year: 'numeric',
       })
     : '';
+
+  // Function to extract text from HTML since backend stores rich text
+  const getExcerpt = (htmlContent) => {
+    if (!htmlContent) return '';
+    const tempDiv = document.createElement('div');
+    tempDiv.innerHTML = htmlContent;
+    const text = tempDiv.textContent || tempDiv.innerText || '';
+    return text.substring(0, 100) + (text.length > 100 ? '...' : '');
+  };
 
   return (
     <article
@@ -39,7 +49,7 @@ function NoteCard({ note, onClick }) {
 
       {/* Content preview */}
       {note.content && (
-        <p className="note-card-excerpt">{note.content}</p>
+        <p className="note-card-excerpt">{getExcerpt(note.content)}</p>
       )}
     </article>
   );
@@ -84,12 +94,27 @@ function EmptyState() {
 function Dashboard() {
   const navigate = useNavigate();
   const [searchQuery, setSearchQuery] = useState('');
-
   const [notes, setNotes] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+
+  const fetchNotes = useCallback(async () => {
+    try {
+      setLoading(true);
+      setError(null);
+      const data = await getNotesApi();
+      setNotes(data || []);
+    } catch (err) {
+      setError(err.message);
+    } finally {
+      setLoading(false);
+    }
+  }, []);
 
   useEffect(() => {
-    setNotes(getNotes());
-  }, []);
+    // eslint-disable-next-line react-hooks/set-state-in-effect
+    fetchNotes();
+  }, [fetchNotes]);
 
   const filteredNotes = useMemo(() => {
     if (!searchQuery.trim()) return notes;
@@ -106,6 +131,24 @@ function Dashboard() {
   };
 
   const hasNotes = filteredNotes.length > 0;
+
+  if (loading) {
+    return (
+      <div className="dashboard" style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100%' }}>
+        <Loader size="lg" />
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className="dashboard" style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100%', flexDirection: 'column' }}>
+        <h3 style={{ color: 'var(--color-danger)' }}>Failed to load notes</h3>
+        <p>{error}</p>
+        <button className="btn btn-outline" onClick={fetchNotes} style={{ marginTop: '1rem' }}>Try Again</button>
+      </div>
+    );
+  }
 
   return (
     <div className="dashboard" id="dashboardPage">

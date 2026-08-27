@@ -7,7 +7,7 @@ import Placeholder from '@tiptap/extension-placeholder';
 import Button from '../components/Button/Button.jsx';
 import Loader from '../components/Loader/Loader.jsx';
 import EditorToolbar from '../components/EditorToolbar/EditorToolbar.jsx';
-import { getNote, saveNote } from '../utils/storage.js';
+import { getNoteApi, createNoteApi, updateNoteApi, deleteNoteApi } from '../utils/api.js';
 import './NoteEditor.css';
 
 /* ---- Note Editor Page ---- */
@@ -20,6 +20,7 @@ function NoteEditor() {
   const [title, setTitle] = useState('');
   const [loading, setLoading] = useState(isEditMode);
   const [saving, setSaving] = useState(false);
+  const [deleting, setDeleting] = useState(false);
 
   /* ---- Tiptap Editor ---- */
 
@@ -44,49 +45,65 @@ function NoteEditor() {
   /* ---- Load Note Data (Edit Mode) ---- */
 
   useEffect(() => {
+    let isMounted = true;
     if (isEditMode && editor) {
-      // Fetch note from local storage
-      const timer = setTimeout(() => {
-        const note = getNote(id);
-        if (note) {
-          setTitle(note.title || '');
-          editor.commands.setContent(note.content || '');
+      const fetchNote = async () => {
+        try {
+          const note = await getNoteApi(id);
+          if (isMounted && note) {
+            setTitle(note.title || '');
+            editor.commands.setContent(note.content || '');
+          }
+        } catch (error) {
+          console.error('Failed to load note', error);
+          if (isMounted) navigate('/dashboard');
+        } finally {
+          if (isMounted) setLoading(false);
         }
-        setLoading(false);
-      }, 600);
-
-      return () => clearTimeout(timer);
+      };
+      fetchNote();
     }
-  }, [id, isEditMode, editor]);
+    return () => {
+      isMounted = false;
+    };
+  }, [id, isEditMode, editor, navigate]);
 
   /* ---- Handlers ---- */
 
-  const handleSave = useCallback(() => {
+  const handleSave = useCallback(async () => {
     if (!editor) return;
 
     setSaving(true);
+    const titleVal = title.trim() || 'Untitled';
+    const contentVal = editor.getHTML();
 
-    const noteData = {
-      title: title.trim() || 'Untitled',
-      content: editor.getHTML(),
-      updatedAt: new Date().toISOString(),
-    };
-
-    if (isEditMode) {
-      noteData.id = id;
-    } else {
-      noteData.id = Date.now().toString(); // Generate simple ID for new notes
-    }
-
-    // Save to local storage
-    saveNote(noteData);
-
-    // Simulate save delay then navigate back
-    setTimeout(() => {
-      setSaving(false);
+    try {
+      if (isEditMode) {
+        await updateNoteApi(id, titleVal, contentVal);
+      } else {
+        await createNoteApi(titleVal, contentVal);
+      }
       navigate('/dashboard');
-    }, 800);
+    } catch (error) {
+      console.error('Failed to save note', error);
+      alert('Error saving note: ' + error.message);
+      setSaving(false);
+    }
   }, [editor, title, id, isEditMode, navigate]);
+
+  const handleDelete = useCallback(async () => {
+    if (window.confirm('Are you sure you want to delete this note?')) {
+      setDeleting(true);
+      try {
+        await deleteNoteApi(id);
+        navigate('/dashboard');
+      } catch (error) {
+        console.error('Failed to delete note', error);
+        alert('Error deleting note: ' + error.message);
+        setDeleting(false);
+      }
+    }
+  }, [id, navigate]);
 
   const handleCancel = useCallback(() => {
     navigate('/dashboard');
@@ -118,11 +135,23 @@ function NoteEditor() {
           </h1>
         </div>
         <div className="note-editor-actions">
+          {isEditMode && (
+            <Button
+              variant="outline"
+              size="md"
+              onClick={handleDelete}
+              disabled={saving || deleting}
+              id="noteEditorDelete"
+              style={{ color: 'var(--color-danger)', borderColor: 'var(--color-danger)' }}
+            >
+              {deleting ? 'Deleting…' : 'Delete'}
+            </Button>
+          )}
           <Button
             variant="ghost"
             size="md"
             onClick={handleCancel}
-            disabled={saving}
+            disabled={saving || deleting}
             id="noteEditorCancel"
           >
             Cancel
@@ -131,7 +160,7 @@ function NoteEditor() {
             variant="primary"
             size="md"
             onClick={handleSave}
-            disabled={saving}
+            disabled={saving || deleting}
             id="noteEditorSave"
           >
             {saving ? 'Saving…' : 'Save Note'}

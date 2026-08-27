@@ -1,16 +1,26 @@
 import { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import Input from '../components/Input/Input.jsx';
 import Button from '../components/Button/Button.jsx';
+import { signupApi } from '../utils/api.js';
+import { useAuth } from '../context/AuthContext.jsx';
 
 function Signup({ mode, switchMode }) {
+  const [name, setName] = useState(''); // Add a state for name since backend requires it
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
   const [loading, setLoading] = useState(false);
   const [errors, setErrors] = useState({});
+  const [apiError, setApiError] = useState('');
+  const { login } = useAuth();
+  const navigate = useNavigate();
 
   const validate = () => {
     const newErrors = {};
+    if (!name) {
+      newErrors.name = 'Name is required';
+    }
     if (!email) {
       newErrors.email = 'Email is required';
     } else if (!/\S+@\S+\.\S+/.test(email)) {
@@ -18,8 +28,8 @@ function Signup({ mode, switchMode }) {
     }
     if (!password) {
       newErrors.password = 'Password is required';
-    } else if (password.length < 8) {
-      newErrors.password = 'Must be at least 8 characters';
+    } else if (password.length < 6) {
+      newErrors.password = 'Must be at least 6 characters';
     }
     if (!confirmPassword) {
       newErrors.confirmPassword = 'Please confirm your password';
@@ -30,15 +40,20 @@ function Signup({ mode, switchMode }) {
     return Object.keys(newErrors).length === 0;
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     if (validate()) {
       setLoading(true);
-      // Mock API call — will connect to POST /api/auth/signup later
-      setTimeout(() => {
+      setApiError('');
+      try {
+        const data = await signupApi(name, email, password);
+        login({ _id: data._id, name: data.name, email: data.email }, data.token);
+        navigate('/dashboard');
+      } catch (err) {
+        setApiError(err.message);
+      } finally {
         setLoading(false);
-        console.log('Signup submitted:', { email });
-      }, 1500);
+      }
     }
   };
 
@@ -51,7 +66,19 @@ function Signup({ mode, switchMode }) {
       <h2 className="form-title">Create Account</h2>
       <p className="form-subtitle">Start organizing your thoughts.</p>
 
+      {apiError && <div className="api-error" style={{ color: 'var(--color-danger)', marginBottom: '1rem', fontSize: '0.875rem', textAlign: 'center' }}>{apiError}</div>}
+
       <form className="auth-form" onSubmit={handleSubmit} noValidate>
+        <Input
+          label="Full Name"
+          type="text"
+          placeholder="Jane Doe"
+          value={name}
+          onChange={(e) => setName(e.target.value)}
+          error={errors.name}
+          autoComplete="name"
+        />
+
         <Input
           label="Email Address"
           type="email"

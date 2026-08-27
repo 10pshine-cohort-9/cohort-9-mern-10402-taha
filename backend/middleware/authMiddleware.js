@@ -1,5 +1,6 @@
 const jwt = require('jsonwebtoken');
 const User = require('../models/User');
+const logger = require('../utils/logger');
 
 const protect = async (req, res, next) => {
   let token;
@@ -20,12 +21,14 @@ const protect = async (req, res, next) => {
 
       next();
     } catch (error) {
+      logger.warn({ reqId: req.id, error: error.message }, 'Unauthorized access attempt - token failed');
       res.status(401);
       next(new Error('Not authorized, token failed'));
     }
   }
 
   if (!token) {
+    logger.warn({ reqId: req.id }, 'Unauthorized access attempt - no token provided');
     res.status(401);
     next(new Error('Not authorized, no token'));
   }

@@ -61,7 +61,7 @@ function Signup({ mode, switchMode }) {
     <div
       className="pane pane__signup"
       id="paneSignup"
-      inert={mode === 'signin' ? '' : undefined}
+      inert={mode === 'signin' ? true : undefined}
     >
       <h2 className="form-title">Create Account</h2>
       <p className="form-subtitle">Start organizing your thoughts.</p>

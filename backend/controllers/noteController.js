@@ -101,7 +101,7 @@ const updateNote = async (req, res, next) => {
     const updatedNote = await Note.findByIdAndUpdate(
       id,
       { title, content },
-      { new: true, runValidators: true }
+      { returnDocument: 'after', runValidators: true }
     );
 
     logger.info(`Note updated by user ${req.user.id}: ${note._id}`);

@@ -14,17 +14,19 @@ function AppLayout() {
   return (
     <div className="app-layout">
       {/* Sidebar Overlay (mobile) */}
-      <div
+      <button
+        type="button"
         className={`sidebar-overlay ${sidebarOpen ? 'sidebar-overlay-visible' : ''}`}
         onClick={closeSidebar}
+        aria-label="Close sidebar"
       />
 
       {/* Sidebar */}
       <aside className={`sidebar ${sidebarOpen ? 'sidebar-open' : ''}`}>
-        <div className="sidebar-brand" onClick={() => { navigate('/'); closeSidebar(); }} role="button" tabIndex={0}>
+        <button type="button" className="sidebar-brand" onClick={() => { navigate('/'); closeSidebar(); }}>
           <div className="sidebar-brand-title">Aesthete</div>
           <div className="sidebar-brand-subtitle">Your Thought Space</div>
-        </div>
+        </button>
 
         <nav className="sidebar-nav">
           <NavLink
@@ -59,11 +61,10 @@ function AppLayout() {
           >
             + New Note
           </button>
-          <div
+          <button
+            type="button"
             className="sidebar-user"
             onClick={() => { navigate('/profile'); closeSidebar(); }}
-            role="button"
-            tabIndex={0}
           >
             <div className="sidebar-avatar" aria-hidden="true">
               {user?.name ? user.name.charAt(0).toUpperCase() : 'U'}
@@ -72,7 +73,7 @@ function AppLayout() {
               <span className="sidebar-user-name">{user?.name || 'User'}</span>
               <span className="sidebar-user-role">Member</span>
             </div>
-          </div>
+          </button>
         </div>
       </aside>
 
@@ -81,6 +82,7 @@ function AppLayout() {
         {/* Header */}
         <header className="app-header">
           <button
+            type="button"
             className="mobile-menu-toggle"
             onClick={toggleSidebar}
             aria-label="Toggle menu"
@@ -92,6 +94,7 @@ function AppLayout() {
 
           <div className="header-actions">
             <button
+              type="button"
               className="header-action-btn header-action-btn--create"
               aria-label="Create new note"
               onClick={() => navigate('/notes/new')}

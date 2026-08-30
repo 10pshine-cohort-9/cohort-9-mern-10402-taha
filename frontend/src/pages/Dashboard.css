@@ -77,6 +77,11 @@
               transform var(--transition-base),
               box-shadow var(--transition-base);
   position: relative;
+  /* Reset button defaults */
+  font: inherit;
+  color: inherit;
+  text-align: left;
+  width: 100%;
 }
 
 .note-card:hover {

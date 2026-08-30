@@ -4,6 +4,7 @@ import Input from '../components/Input/Input.jsx';
 import Button from '../components/Button/Button.jsx';
 import { loginApi } from '../utils/api.js';
 import { useAuth } from '../context/AuthContext.jsx';
+import { isValidEmail } from '../utils/validation.js';
 
 function Login({ mode, switchMode }) {
   const [email, setEmail] = useState('');
@@ -18,7 +19,7 @@ function Login({ mode, switchMode }) {
     const newErrors = {};
     if (!email) {
       newErrors.email = 'Email is required';
-    } else if (!/\S+@\S+\.\S+/.test(email)) {
+    } else if (!isValidEmail(email)) {
       newErrors.email = 'Email address is invalid';
     }
     if (!password) {
@@ -91,7 +92,7 @@ function Login({ mode, switchMode }) {
       </form>
 
       <p className="switch-text">
-        Don’t have an account?
+        Don&apos;t have an account?{' '}
         <button
           type="button"
           className="switch-btn"

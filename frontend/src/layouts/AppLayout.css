@@ -28,6 +28,15 @@
   border-bottom: 1px solid var(--color-border);
   cursor: pointer;
   transition: background-color var(--transition-fast);
+  /* Reset button defaults */
+  background: none;
+  border-top: none;
+  border-left: none;
+  border-right: none;
+  font: inherit;
+  color: inherit;
+  text-align: left;
+  width: 100%;
 }
 
 .sidebar-brand:hover {
@@ -133,6 +142,13 @@
   margin: calc(-1 * var(--space-sm));
   border-radius: var(--radius-md);
   transition: background-color var(--transition-fast);
+  /* Reset button defaults */
+  background: none;
+  border: none;
+  font: inherit;
+  color: inherit;
+  text-align: left;
+  width: calc(100% + 2 * var(--space-sm));
 }
 
 .sidebar-user:hover {
@@ -273,6 +289,10 @@
   inset: 0;
   background-color: rgba(0, 0, 0, 0.6);
   z-index: calc(var(--z-sticky) - 1);
+  /* Reset button defaults */
+  border: none;
+  padding: 0;
+  cursor: default;
 }
 
 /* ---- Responsive ---- */

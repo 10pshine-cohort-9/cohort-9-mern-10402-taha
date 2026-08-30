@@ -1,0 +1,34 @@
+$kind: http-example
+request:
+  url: "{{baseUrl}}/api/auth/signup"
+  method: POST
+  headers:
+    Content-Type: application/json
+  body:
+    type: json
+    content: |-
+      {
+        "name": "Test User",
+        "email": "testuser@example.com",
+        "password": "password123"
+      }
+response:
+  statusCode: 400
+  statusText: Bad Request
+  headers:
+    x-powered-by: Express
+    access-control-allow-origin: "*"
+    content-type: application/json; charset=utf-8
+    content-length: "259"
+    etag: W/"103-sMq0u77RfGPAXLZBfaZHFiAdHjU"
+    date: Tue, 25 Aug 2026 16:54:09 GMT
+    connection: keep-alive
+    keep-alive: timeout=5
+  body:
+    type: json
+    content: |-
+      {
+        "message": "User already exists",
+        "stack": "Error: User already exists\n    at signup (C:\\Users\\Hassan\\Desktop\\Project Copy\\backend\\controllers\\authController.js:30:13)\n    at process.processTicksAndRejections (node:internal/process/task_queues:103:5)"
+      }
+order: 1787677054699

@@ -1,0 +1,9 @@
+name: Local
+values:
+  - key: baseUrl
+    value: 'http://localhost:5000'
+  - key: authToken
+    secret: true
+  - key: noteId
+    value: ''
+color: 0

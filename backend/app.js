@@ -1,7 +1,7 @@
 const express = require('express');
 const cors = require('cors');
 const pinoHttp = require('pino-http');
-const { randomUUID } = require('crypto');
+const { randomUUID } = require('node:crypto');
 const logger = require('./utils/logger');
 const healthRoutes = require('./routes/healthRoutes');
 const notFound = require('./middleware/notFound');
@@ -9,8 +9,14 @@ const errorHandler = require('./middleware/errorHandler');
 
 const app = express();
 
+// Prevent Express from disclosing version information via X-Powered-By header
+app.disable('x-powered-by');
+
 // Middleware
-app.use(cors());
+const allowedOrigin = process.env.FRONTEND_URL || 'http://localhost:5173';
+app.use(cors({
+  origin: allowedOrigin,
+}));
 app.use(express.json());
 
 app.use(pinoHttp({
@@ -21,7 +27,7 @@ app.use(pinoHttp({
   serializers: {
     req: (req) => {
       const sanitizedReq = pinoHttp.stdSerializers.req(req);
-      if (req.raw && req.raw.body) {
+      if (req.raw?.body) {
         sanitizedReq.body = req.raw.body;
       }
       return sanitizedReq;
@@ -41,3 +47,4 @@ app.use(notFound);
 app.use(errorHandler);
 
 module.exports = app;
+

@@ -26,18 +26,11 @@ function NoteCard({ note, onClick }) {
   };
 
   return (
-    <article
+    <button
+      type="button"
       className="note-card"
       onClick={() => onClick(note._id || note.id)}
-      tabIndex={0}
-      role="button"
       aria-label={`Open note: ${note.title}`}
-      onKeyDown={(e) => {
-        if (e.key === 'Enter' || e.key === ' ') {
-          e.preventDefault();
-          onClick(note._id || note.id);
-        }
-      }}
     >
       {/* Date */}
       {formattedDate && (
@@ -51,7 +44,7 @@ function NoteCard({ note, onClick }) {
       {note.content && (
         <p className="note-card-excerpt">{getExcerpt(note.content)}</p>
       )}
-    </article>
+    </button>
   );
 }
 
@@ -121,8 +114,8 @@ function Dashboard() {
     const q = searchQuery.toLowerCase();
     return notes.filter(
       (note) =>
-        (note.title && note.title.toLowerCase().includes(q)) ||
-        (note.content && note.content.toLowerCase().includes(q))
+        note.title?.toLowerCase().includes(q) ||
+        note.content?.toLowerCase().includes(q)
     );
   }, [searchQuery, notes]);
 
@@ -145,7 +138,7 @@ function Dashboard() {
       <div className="dashboard" style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100%', flexDirection: 'column' }}>
         <h3 style={{ color: 'var(--color-danger)' }}>Failed to load notes</h3>
         <p>{error}</p>
-        <button className="btn btn-outline" onClick={fetchNotes} style={{ marginTop: '1rem' }}>Try Again</button>
+        <button type="button" className="btn btn-outline" onClick={fetchNotes} style={{ marginTop: '1rem' }}>Try Again</button>
       </div>
     );
   }

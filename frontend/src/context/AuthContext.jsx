@@ -1,4 +1,4 @@
-import { createContext, useState, useEffect, useContext, useCallback } from 'react';
+import { createContext, useState, useEffect, useContext, useCallback, useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
 
 const AuthContext = createContext();
@@ -30,15 +30,26 @@ export const AuthProvider = ({ children }) => {
     return () => window.removeEventListener('auth-error', handleAuthError);
   }, [logout]);
 
-  const login = (userData, userToken) => {
+  const login = useCallback((userData, userToken) => {
     setUser(userData);
     setToken(userToken);
     localStorage.setItem('user', JSON.stringify(userData));
     localStorage.setItem('token', userToken);
-  };
+  }, []);
+
+  const value = useMemo(
+    () => ({
+      user,
+      token,
+      login,
+      logout,
+      isAuthenticated: !!token,
+    }),
+    [user, token, login, logout]
+  );
 
   return (
-    <AuthContext.Provider value={{ user, token, login, logout, isAuthenticated: !!token }}>
+    <AuthContext.Provider value={value}>
       {children}
     </AuthContext.Provider>
   );

@@ -1,0 +1,78 @@
+$kind: http-request
+method: POST
+url: "{{baseUrl}}/api/auth/signup"
+headers:
+  Content-Type: application/json
+body:
+  type: json
+  content: |-
+    {
+      "name": "Test User",
+      "email": "testuser@example.com",
+      "password": "password123"
+    }
+scripts:
+  - type: afterResponse
+    code: |-
+      pm.test("Response time is less than 2000ms", function () {
+          pm.expect(pm.response.responseTime).to.be.below(2000);
+      });
+
+      pm.test("Content-Type is application/json", function () {
+          pm.expect(pm.response.headers.get("Content-Type")).to.include("application/json");
+      });
+
+      if (pm.response.code === 201) {
+          pm.test("Status code is 201 Created", function () {
+              pm.response.to.have.status(201);
+          });
+
+          pm.test("Response has _id", function () {
+              pm.expect(pm.response.json()).to.have.property("_id");
+          });
+
+          pm.test("Response has name", function () {
+              const json = pm.response.json();
+              pm.expect(json).to.have.property("name");
+              pm.expect(json.name).to.equal("Test User");
+          });
+
+          pm.test("Response has email", function () {
+              const json = pm.response.json();
+              pm.expect(json).to.have.property("email");
+              pm.expect(json.email).to.equal("testuser@example.com");
+          });
+
+          pm.test("Response has token", function () {
+              const json = pm.response.json();
+              pm.expect(json).to.have.property("token");
+              pm.expect(json.token).to.be.a("string");
+          });
+
+          pm.test("Token is valid JWT (3 parts)", function () {
+              const json = pm.response.json();
+              pm.expect(json.token.split(".").length).to.equal(3);
+          });
+
+          pm.test("Password is not returned in response", function () {
+              pm.expect(pm.response.json()).to.not.have.property("password");
+          });
+
+          const json = pm.response.json();
+          if (json.token) {
+              pm.collectionVariables.set("authToken", json.token);
+              console.log("authToken saved from signup");
+          }
+      }
+
+      if (pm.response.code === 400) {
+          pm.test("Status code is 400 for bad request", function () {
+              pm.response.to.have.status(400);
+          });
+
+          pm.test("Error message is present", function () {
+              pm.expect(pm.response.json()).to.have.property("message");
+          });
+      }
+    language: text/javascript
+examples: .resources/Signup.resources/examples

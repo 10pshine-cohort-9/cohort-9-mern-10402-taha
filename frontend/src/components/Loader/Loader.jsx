@@ -14,9 +14,9 @@ function Loader({ size = 'md', fullScreen = false }) {
   ].join(' ');
 
   return (
-    <div className={containerClasses} role="status" aria-label="Loading">
+    <output className={containerClasses} aria-label="Loading">
       <div className={spinnerClasses} />
-    </div>
+    </output>
   );
 }
 

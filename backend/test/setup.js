@@ -7,7 +7,7 @@
  * - Export the Express app and helpers for test files
  */
 
-const path = require('path');
+const path = require('node:path');
 const dotenv = require('dotenv');
 
 // Load test environment variables BEFORE importing app or models

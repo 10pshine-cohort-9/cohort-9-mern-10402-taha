@@ -4,6 +4,7 @@ import Input from '../components/Input/Input.jsx';
 import Button from '../components/Button/Button.jsx';
 import { signupApi } from '../utils/api.js';
 import { useAuth } from '../context/AuthContext.jsx';
+import { isValidEmail } from '../utils/validation.js';
 
 function Signup({ mode, switchMode }) {
   const [name, setName] = useState(''); // Add a state for name since backend requires it
@@ -23,7 +24,7 @@ function Signup({ mode, switchMode }) {
     }
     if (!email) {
       newErrors.email = 'Email is required';
-    } else if (!/\S+@\S+\.\S+/.test(email)) {
+    } else if (!isValidEmail(email)) {
       newErrors.email = 'Email address is invalid';
     }
     if (!password) {
@@ -124,7 +125,7 @@ function Signup({ mode, switchMode }) {
       </form>
 
       <p className="switch-text">
-        Already have an account?
+        Already have an account?{' '}
         <button
           type="button"
           className="switch-btn"

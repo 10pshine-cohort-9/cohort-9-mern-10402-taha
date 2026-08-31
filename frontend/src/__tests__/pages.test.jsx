@@ -92,6 +92,53 @@ describe('Dashboard Page', () => {
     expect(await screen.findByText('Failed to load notes')).toBeInTheDocument();
     expect(screen.getByText('API Error')).toBeInTheDocument();
   });
+
+  it('navigates to note editor on note click', async () => {
+    const mockNotes = [{ _id: '1', title: 'Note 1', content: 'Content 1' }];
+    api.getNotesApi.mockResolvedValueOnce(mockNotes);
+    
+    render(
+      <MemoryRouter initialEntries={['/dashboard']}>
+        <AuthProvider>
+          <Routes>
+            <Route path="/dashboard" element={<Dashboard />} />
+            <Route path="/notes/:id/edit" element={<div>Edit Note Route</div>} />
+          </Routes>
+        </AuthProvider>
+      </MemoryRouter>
+    );
+    
+    const noteCard = await screen.findByText('Note 1');
+    fireEvent.click(noteCard);
+    
+    expect(await screen.findByText('Edit Note Route')).toBeInTheDocument();
+  });
+
+  it('filters notes based on search query', async () => {
+    const mockNotes = [
+      { _id: '1', title: 'React Basics', content: 'Learn hooks' },
+      { _id: '2', title: 'Node.js', content: 'Express server' },
+      { _id: '3', content: 'No title note' },
+      { _id: '4', title: 'No content note' }
+    ];
+    api.getNotesApi.mockResolvedValueOnce(mockNotes);
+    
+    renderWithContext(<Dashboard />);
+    
+    await screen.findByText('React Basics');
+    
+    const searchInput = screen.getByPlaceholderText('Search notes...');
+    
+    // Search by title
+    fireEvent.change(searchInput, { target: { value: 'react' } });
+    expect(screen.getByText('React Basics')).toBeInTheDocument();
+    expect(screen.queryByText('Node.js')).not.toBeInTheDocument();
+    
+    // Search by content
+    fireEvent.change(searchInput, { target: { value: 'express' } });
+    expect(screen.queryByText('React Basics')).not.toBeInTheDocument();
+    expect(screen.getByText('Node.js')).toBeInTheDocument();
+  });
 });
 
 describe('NoteEditor Page', () => {

@@ -1,0 +1,87 @@
+$kind: http-request
+name: Create Note
+method: POST
+url: '{{baseUrl}}/api/notes'
+headers:
+  - key: Content-Type
+    value: application/json
+  - key: Authorization
+    value: 'Bearer {{authToken}}'
+body:
+  type: json
+  content: |-
+    {
+      "title": "My First Note",
+      "content": "This is the content of my first note."
+    }
+scripts:
+  - type: afterResponse
+    language: text/javascript
+    code: |-
+      pm.test("Response time is less than 2000ms", function () {
+          pm.expect(pm.response.responseTime).to.be.below(2000);
+      });
+
+      pm.test("Content-Type is application/json", function () {
+          pm.expect(pm.response.headers.get("Content-Type")).to.include("application/json");
+      });
+
+      if (pm.response.code === 201) {
+          pm.test("Status code is 201 Created", function () {
+              pm.response.to.have.status(201);
+          });
+
+          pm.test("Response has _id", function () {
+              pm.expect(pm.response.json()).to.have.property("_id");
+          });
+
+          pm.test("Response has title", function () {
+              const json = pm.response.json();
+              pm.expect(json).to.have.property("title");
+              pm.expect(json.title).to.equal("My First Note");
+          });
+
+          pm.test("Response has content", function () {
+              const json = pm.response.json();
+              pm.expect(json).to.have.property("content");
+              pm.expect(json.content).to.equal("This is the content of my first note.");
+          });
+
+          pm.test("Response has user field", function () {
+              pm.expect(pm.response.json()).to.have.property("user");
+          });
+
+          pm.test("Response has createdAt timestamp", function () {
+              pm.expect(pm.response.json()).to.have.property("createdAt");
+          });
+
+          pm.test("Response has updatedAt timestamp", function () {
+              pm.expect(pm.response.json()).to.have.property("updatedAt");
+          });
+
+          const json = pm.response.json();
+          if (json._id) {
+              pm.collectionVariables.set("noteId", json._id);
+              console.log("noteId saved: " + json._id);
+          }
+      }
+
+      if (pm.response.code === 400) {
+          pm.test("Status code is 400 for missing fields", function () {
+              pm.response.to.have.status(400);
+          });
+
+          pm.test("Error message is present", function () {
+              pm.expect(pm.response.json()).to.have.property("message");
+          });
+      }
+
+      if (pm.response.code === 401) {
+          pm.test("Status code is 401 for unauthorized", function () {
+              pm.response.to.have.status(401);
+          });
+
+          pm.test("Unauthorized error message is present", function () {
+              pm.expect(pm.response.json()).to.have.property("message");
+          });
+      }

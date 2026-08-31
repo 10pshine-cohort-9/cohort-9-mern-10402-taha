@@ -1,0 +1,6 @@
+$kind: collection
+name: Auth API
+description: Authentication endpoints for the project
+variables:
+  authToken: ""
+  noteId: ""

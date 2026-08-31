@@ -101,6 +101,21 @@ describe('Signup Page', () => {
     expect(screen.getByText('Please confirm your password')).toBeInTheDocument();
   });
 
+  it('shows validation errors for invalid email format and short password', async () => {
+    renderAuth(['/signup']);
+    
+    const emailInputs = screen.getAllByLabelText('Email Address');
+    fireEvent.change(emailInputs[0], { target: { value: 'invalid-email' } });
+    
+    const passwordInputs = screen.getAllByLabelText('Password');
+    fireEvent.change(passwordInputs[0], { target: { value: '123' } });
+    
+    fireEvent.click(screen.getByRole('button', { name: /Create Account →/i }));
+    
+    expect(await screen.findByText('Email address is invalid')).toBeInTheDocument();
+    expect(screen.getByText('Must be at least 6 characters')).toBeInTheDocument();
+  });
+
   it('shows validation error for mismatched passwords', async () => {
     renderAuth(['/signup']);
     
